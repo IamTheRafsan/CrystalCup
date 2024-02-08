@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <item
+        android:id="@+id/homeButton"
+        android:title="Home"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/home_icon"/>
+
+    <item
+        android:title="Cart"
+        android:id="@+id/cartButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/cart_icon_2"/>
+
+
+    <item
+        android:title="Offers"
+        android:id="@+id/offerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/offer_icon"/>
+
+
+    <item
+        android:title="Messages"
+        android:id="@+id/messageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/message_icon"/>
+
+
+    <item
+        android:id="@+id/profileButton"
+        android:title="Profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:icon="@drawable/user_icon_3"/>
+</menu>
