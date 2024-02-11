@@ -7,7 +7,8 @@
         android:title="Home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:icon="@drawable/home_icon"/>
+        android:icon="@drawable/home_icon"
+        />
 
     <item
         android:title="Cart"

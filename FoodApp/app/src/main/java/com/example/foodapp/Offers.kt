@@ -1,13 +1,11 @@
 package com.example.foodapp
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
@@ -15,26 +13,33 @@ import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
 import com.squareup.picasso.Picasso
 
-class Offers : AppCompatActivity() {
+
+class Offers : Fragment() {
 
     private lateinit var offerRecyleView: RecyclerView
-    private lateinit var adapter: myAdapter
+    private lateinit var adapter: Offers.myAdapter
     private var offerList: ArrayList<HashMap<String, String>> = ArrayList()
     private var offerHashMap: HashMap<String, String>? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_offers)
 
-        offerRecyleView = findViewById(R.id.offerRecycleView)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        // Inflate the layout for this fragment
+        val view = inflater.inflate(R.layout.fragment_offers, container, false)
+
+        offerRecyleView = view.findViewById(R.id.offerRecycleView)
 
         adapter = myAdapter()
         offerRecyleView.adapter = adapter
-        offerRecyleView.layoutManager = LinearLayoutManager(this)
+        offerRecyleView.layoutManager = LinearLayoutManager(requireContext())
 
-        loadData()
+        loadOffers()
 
+        return view
     }
+
 
     //==================Recycle View Adapter
     private inner class myAdapter : RecyclerView.Adapter<myAdapter.OfferViewHolder>() {
@@ -65,7 +70,7 @@ class Offers : AppCompatActivity() {
     }
 
     //================Load Offer Data
-    fun loadData() {
+    fun loadOffers() {
         val url = "https://www.digitalrangersbd.com/app/ladidh/offer.php"
 
         val jsonArrayRequest = JsonArrayRequest(url, Response.Listener { response ->
@@ -92,7 +97,9 @@ class Offers : AppCompatActivity() {
                 error.printStackTrace()
             }
         )
-        val requestQueue = Volley.newRequestQueue(this)
+        val requestQueue = Volley.newRequestQueue(requireContext())
         requestQueue.add(jsonArrayRequest)
     }
+
+
 }

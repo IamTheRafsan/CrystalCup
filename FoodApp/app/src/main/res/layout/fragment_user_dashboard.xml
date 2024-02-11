@@ -1,24 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/backgroundColor"
+    android:background="@color/white"
     tools:context=".UserDashboard">
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <LinearLayout
@@ -31,8 +26,8 @@
 
                 <ImageView
                     android:id="@+id/backButton"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_weight="20"
                     android:src="@drawable/back_button_black"
                     />
@@ -43,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="Profile"
-                    android:textSize="28sp"
+                    android:textSize="24sp"
                     android:layout_weight="80"
                     android:fontFamily="@font/poppins_semibold"
 
@@ -51,8 +46,8 @@
 
                 <ImageView
                     android:id="@+id/editButton"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/edit_button"
                     android:layout_weight="30"
                     />
@@ -64,7 +59,8 @@
                 android:layout_height="90dp"
                 android:src="@drawable/user_icon_2"
                 android:layout_gravity="center"
-            />
+                android:layout_marginTop="35dp"
+                />
 
             <TextView
                 android:id="@+id/userName"
@@ -105,7 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Address"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
                     android:fontFamily="@font/poppins_semibold"
                     />
@@ -150,7 +146,7 @@
                         android:layout_height="40dp"
                         android:text="Track Order"
                         android:padding="8dp"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:layout_marginLeft="5dp"
                         android:fontFamily="@font/poppins_semibold"
                         />
@@ -181,7 +177,7 @@
                         android:layout_height="40dp"
                         android:text="Order History"
                         android:padding="8dp"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:layout_marginLeft="5dp"
                         android:fontFamily="@font/poppins_semibold"
                         />
@@ -194,10 +190,11 @@
                     android:layout_marginTop="15dp"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:layout_marginBottom="20dp"
                     android:orientation="horizontal"
                     android:padding="10dp"
                     android:background="@drawable/button_background_2"
-                    android:elevation="3dp"
+                    android:elevation="5dp"
                     >
                     <ImageView
                         android:layout_width="35dp"
@@ -211,7 +208,7 @@
                         android:layout_height="40dp"
                         android:text="Logout"
                         android:padding="8dp"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:layout_marginLeft="5dp"
                         android:fontFamily="@font/poppins_semibold"
                         />
@@ -223,4 +220,5 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+
+</FrameLayout>

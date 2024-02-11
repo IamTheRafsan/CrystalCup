@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -30,7 +31,7 @@ class SignUp : AppCompatActivity() {
     private lateinit var signUpButton: Button
     private lateinit var signInButton: Button
     private lateinit var progressBar: ProgressBar
-    private lateinit var backButton: Button
+    private lateinit var backButton: ImageView
 
 
 
@@ -51,8 +52,7 @@ class SignUp : AppCompatActivity() {
 
         //-----Back Button
         backButton.setOnClickListener {
-            val myIntent = Intent(this, HomeScreen::class.java)
-            startActivity(myIntent)
+            finish()
         }
         //--------Go to sign in page
         signInButton.setOnClickListener {
@@ -138,8 +138,7 @@ class SignUp : AppCompatActivity() {
 
 
     override fun onBackPressed() {
-        val homeIntent = Intent(this, MainActivity::class.java)
-        startActivity(homeIntent)
+
         finish()
         super.onBackPressed()
     }

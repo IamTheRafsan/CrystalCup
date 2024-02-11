@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".HomeScreen">
+
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="10"
+                    android:padding="10dp"
+                    >
+
+                    <ImageView
+                        android:id="@+id/userIcon"
+                        android:layout_width="80dp"
+                        android:layout_height="60dp"
+                        android:layout_weight="0"
+                        android:src="@drawable/user_icon"
+
+                        />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_weight="9"
+                        android:layout_marginTop="2dp"
+                        >
+
+                        <TextView
+                            android:id="@+id/userName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Hi, Rafsan"
+                            android:fontFamily="@font/poppins_light"
+                            android:textSize="16sp"
+                            android:paddingLeft="5dp"
+                            />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            >
+
+                            <ImageView
+                                android:id="@+id/locationIcon"
+                                android:layout_width="20dp"
+                                android:layout_height="30dp"
+                                android:layout_weight="1"
+                                android:layout_marginRight="5dp"
+                                android:src="@drawable/location_icon"
+                                />
+
+
+                            <TextView
+                                android:id="@+id/location"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Location"
+                                android:fontFamily="@font/poppins_semibold"
+                                android:textSize="18sp"
+                                />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/notificationIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:layout_marginRight="10dp"
+                        android:src="@drawable/notification_icon"
+                        android:padding="5dp"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="16dp"
+                    android:paddingLeft="25dp"
+                    android:paddingRight="25dp"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/searchFood"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:layout_weight=".8"
+                        android:background="@drawable/search_background"
+                        android:drawableStart="@drawable/search_icon"
+                        android:drawablePadding="10dp"
+                        android:hint="Search Your Food"
+                        android:maxLines="1"
+                        android:paddingStart="15dp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:textSize="16sp">
+
+                    </EditText>
+
+                    <ImageView
+                        android:id="@+id/searchButton"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/search_icon_background"
+                        android:src="@drawable/search_icon_2"
+                        android:foreground="?attr/selectableItemBackground"
+                        android:padding="15dp"
+                        android:layout_marginLeft="10dp"
+                        />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="230dp"
+                    android:src="@drawable/offer_image"
+                    android:padding="8dp"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingRight="20dp"
+                    android:paddingLeft="20dp"
+                    android:weightSum="10"
+                    >
+
+                    <TextView
+                        android:id="@+id/Menu"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Menu"
+                        android:textSize="24sp"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:layout_weight="9"
+                        />
+
+                    <TextView
+                        android:id="@+id/seeAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="See All"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:textColor="@color/primaryColor"
+                        android:clickable="true"
+                        />
+
+
+                </LinearLayout>
+
+                <ProgressBar
+                    android:id="@+id/menuProgressBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/menuRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    >
+
+                </androidx.recyclerview.widget.RecyclerView>
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+</FrameLayout>

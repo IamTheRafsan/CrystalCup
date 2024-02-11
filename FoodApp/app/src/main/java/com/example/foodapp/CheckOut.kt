@@ -1,5 +1,6 @@
 package com.example.foodapp
 
+import UserDashboard
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -109,7 +110,7 @@ class CheckOut : AppCompatActivity() {
                         .setTitle("Congrats! Order Confirmed.")
                         .setMessage("Note: Delivery charge applied separately.")
                         .setNegativeButton("OK") { dialog, which ->
-                            val intent = Intent(this, UserDashboard::class.java)
+                            val intent = Intent(this, OrderTrack::class.java)
                             startActivity(intent)
                         }
                         .show()

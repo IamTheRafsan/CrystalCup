@@ -1,11 +1,13 @@
 package com.example.foodapp
 
+import UserDashboard
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -22,7 +24,7 @@ class SignIn : AppCompatActivity() {
     private lateinit var signUpButton: Button
     private lateinit var signInButton: Button
     private lateinit var progressBar: ProgressBar
-    private lateinit var backButton: Button
+    private lateinit var backButton: ImageView
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,7 +41,7 @@ class SignIn : AppCompatActivity() {
 
        //-----Back Button
         backButton.setOnClickListener {
-            val myIntent = Intent(this, HomeScreen::class.java)
+            val myIntent = Intent(this, MainActivity::class.java)
             startActivity(myIntent)
         }
 

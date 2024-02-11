@@ -2,6 +2,7 @@ package com.example.foodapp
 
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
@@ -16,9 +17,11 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.volley.Response
@@ -29,6 +32,8 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.common.reflect.TypeToken
+import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import jp.wasabeef.picasso.transformations.RoundedCornersTransformation
 import java.io.IOException
@@ -39,14 +44,14 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 
-
-class Cart : AppCompatActivity() {
+class Cart : Fragment() {
 
     private lateinit var itemTotalTextView: TextView
     private lateinit var totalPriceTextView: TextView
     private lateinit var deliveryChargeTextView: TextView
     private lateinit var couponApplyButton: Button
     private lateinit var checkOutButton: Button
+    private lateinit var deleteCartButton: ImageView
     private lateinit var couponCodeTextField: EditText
     //For the cart
     var cartList: ArrayList<HashMap<String, String>> = ArrayList()
@@ -70,39 +75,35 @@ class Cart : AppCompatActivity() {
     }
 
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?,
+    ): View? {
+        val view = inflater.inflate(R.layout.fragment_cart, container, false)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_cart)
-
-        couponCodeTextField = findViewById(R.id.couponCode)
-        itemTotalTextView = findViewById(R.id.itemTotal)
-        totalPriceTextView = findViewById(R.id.totalPrice)
-        deliveryChargeTextView = findViewById(R.id.deliveryCharge)
-        checkOutButton = findViewById(R.id.checkOutButton)
-        cartRecyclerView = findViewById(R.id.cartRecyclerView)
-        couponApplyButton = findViewById(R.id.couponApplyButton)
+        couponCodeTextField = view.findViewById(R.id.couponCode)
+        itemTotalTextView = view.findViewById(R.id.itemTotal)
+        totalPriceTextView = view.findViewById(R.id.totalPrice)
+        deliveryChargeTextView = view.findViewById(R.id.deliveryCharge)
+        checkOutButton = view.findViewById(R.id.checkOutButton)
+        cartRecyclerView = view.findViewById(R.id.cartRecyclerView)
+        deleteCartButton = view.findViewById(R.id.deleteCartButton)
+        couponApplyButton = view.findViewById(R.id.couponApplyButton)
 
 
 // Cart recycler View adapter call
         val adapter = myAdapter()
         cartRecyclerView.adapter = adapter
-        cartRecyclerView.layoutManager = LinearLayoutManager(this)
+        cartRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        // Update the RecyclerView with the retrieved data
-        val receivedIntent = intent
-        if (receivedIntent != null) {
-            val receivedMenuList = receivedIntent.getSerializableExtra("cartList") as? ArrayList<HashMap<String, String>>
 
-            if (receivedMenuList != null) {
-                this.cartList.addAll(receivedMenuList)
-            }
-        }
+        //------Get the Cart List and Menu from the SharedPreference
+        getCartListFromSharedPreferences()
 
 
         //----location
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
 
         if (!checkLocationPermission()) {
             requestLocationPermission()
@@ -122,7 +123,52 @@ class Cart : AppCompatActivity() {
             goToCheckOut()
 
         }
+
+        deleteCartButton.setOnClickListener {
+
+            AlertDialog.Builder(requireContext())
+                .setTitle("Clear Cart")
+                .setMessage("Are you sure you want to clear your cart?")
+                .setPositiveButton("Yes") { dialog, which ->
+                    val sharedPreferences = requireContext().getSharedPreferences("CartPreferences", Context.MODE_PRIVATE)
+                    sharedPreferences.edit().clear().apply()
+
+                    val homeFragment = HomeScreen()
+                    parentFragmentManager.beginTransaction()
+                        .replace(R.id.frameLayout, homeFragment)
+                        .addToBackStack(null) // Optional: Allows the user to navigate back to the previous fragment
+                        .commit()
+                }
+                .setNegativeButton("No") { dialog, which -> }
+                .show()
+        }
+
+        return view
     }
+
+
+    //------Get the Cart List and Menu from the SharedPreference
+    private fun getCartListFromSharedPreferences() {
+        val sharedPreferences = requireContext().getSharedPreferences("CartPreferences", Context.MODE_PRIVATE)
+        val gson = Gson()
+        val json = sharedPreferences.getString("cartList", null)
+        val type = object : TypeToken<ArrayList<HashMap<String, String>>>() {}.type
+        cartList =  gson.fromJson(json, type) ?: ArrayList()
+
+        if (cartList != null && cartList.isNotEmpty()) {
+            // Convert the cartList to a readable string
+            val cartListString = StringBuilder()
+            for (item in cartList) {
+                val itemName = item["itemName"] ?: ""
+                val itemCount = item["itemCount"] ?: ""
+                cartListString.append("$itemName: $itemCount\n")
+            }
+
+        }
+    }
+    //------Get the Cart List and Menu from the SharedPreference
+
+
 
 
     // --------- Coupon Code Check and Apply
@@ -155,7 +201,7 @@ class Cart : AppCompatActivity() {
 
                     if ( couponList.isEmpty() )
                     {
-                        AlertDialog.Builder(this)
+                        AlertDialog.Builder(requireContext())
                             .setTitle("Sorry! Invalid Coupon")
                             .setMessage("Please put a valid coupon")
                             .setNegativeButton("OK") { dialog, which -> }
@@ -192,7 +238,7 @@ class Cart : AppCompatActivity() {
             }
         )
 
-        val requestQueue = Volley.newRequestQueue(this)
+        val requestQueue = Volley.newRequestQueue(requireContext())
         requestQueue.add(jsonArrayRequest)
     }
 
@@ -206,11 +252,11 @@ class Cart : AppCompatActivity() {
 
         if (cartList.isEmpty()) {
 
-            AlertDialog.Builder(this)
+            AlertDialog.Builder(requireContext())
                 .setTitle("Not Logged In!")
                 .setMessage("Please login to order.")
                 .setNegativeButton("OK") { dialog, which ->
-                    val intent = Intent(this, SignIn::class.java)
+                    val intent = Intent(requireContext(), SignIn::class.java)
                     startActivity(intent)
                 }
                 .show()
@@ -219,7 +265,7 @@ class Cart : AppCompatActivity() {
 
             if (deliveryCharge == 0) {
 
-                AlertDialog.Builder(this)
+                AlertDialog.Builder(requireContext())
                     .setTitle("Location not found!")
                     .setMessage("Please give Location Permission and turn on the Device Location.")
                     .setNegativeButton("OK") { dialog, which ->
@@ -229,7 +275,7 @@ class Cart : AppCompatActivity() {
             } else {
 
                 if (couponPrice != 0.0) {
-                    val intent = Intent(this, CheckOut::class.java)
+                    val intent = Intent(requireContext(), CheckOut::class.java)
 
                     val selectedItemsList = ArrayList<HashMap<String, String>>()
 
@@ -255,7 +301,7 @@ class Cart : AppCompatActivity() {
                     startActivity(intent)
 
                 } else {
-                    AlertDialog.Builder(this)
+                    AlertDialog.Builder(requireContext())
                         .setTitle("Empty Cart")
                         .setMessage("Please select an item")
                         .setNegativeButton("OK") { dialog, which -> }
@@ -360,7 +406,7 @@ class Cart : AppCompatActivity() {
                 }
 
                 holder.minus.setOnClickListener {
-                    if (holder.itemCount > 0) {
+                    if (holder.itemCount > 1) {
                         holder.itemCount--
                         holder.itemAmount.text = holder.itemCount.toString()
 
@@ -383,18 +429,18 @@ class Cart : AppCompatActivity() {
 
     private fun checkLocationPermission(): Boolean {
         return ActivityCompat.checkSelfPermission(
-            this,
+            requireContext(),
             Manifest.permission.ACCESS_FINE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
     }
 
     private fun requestLocationPermission() {
-        ActivityCompat.requestPermissions(
-            this,
+        requestPermissions(
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            LOCATION_PERMISSION_REQUEST_CODE
+            Cart.LOCATION_PERMISSION_REQUEST_CODE
         )
     }
+
 
     private fun requestLocation() {
         try {
@@ -493,7 +539,7 @@ class Cart : AppCompatActivity() {
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            LOCATION_PERMISSION_REQUEST_CODE -> {
+            Cart.LOCATION_PERMISSION_REQUEST_CODE -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // Permission granted, request location
                     requestLocation()
@@ -528,17 +574,21 @@ class Cart : AppCompatActivity() {
     }
 
     fun getAddressFromLocation(latitude: Double, longitude: Double): String {
-        val geocoder = Geocoder(this, Locale.getDefault())
-        try {
-            val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
-            if (addresses != null && addresses.isNotEmpty()) {
-                val address = addresses[0]
-                return address.getAddressLine(0) ?: ""
+        val activity = requireActivity()
+        if (activity != null) {
+            val geocoder = Geocoder(activity, Locale.getDefault())
+            try {
+                val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
+                if (addresses != null && addresses.isNotEmpty()) {
+                    val address = addresses[0]
+                    return address.getAddressLine(0) ?: ""
+                }
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
         }
         return ""
     }
+
 
 }
