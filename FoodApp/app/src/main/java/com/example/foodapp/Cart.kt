@@ -4,6 +4,7 @@ package com.example.foodapp
 import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
@@ -53,6 +54,7 @@ class Cart : Fragment() {
     private lateinit var checkOutButton: Button
     private lateinit var deleteCartButton: ImageView
     private lateinit var couponCodeTextField: EditText
+    private lateinit var sharedPreferences: SharedPreferences
     //For the cart
     var cartList: ArrayList<HashMap<String, String>> = ArrayList()
     private lateinit var cartRecyclerView: RecyclerView
@@ -100,18 +102,11 @@ class Cart : Fragment() {
         //------Get the Cart List and Menu from the SharedPreference
         getCartListFromSharedPreferences()
 
-
-        //----location
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-
-        if (!checkLocationPermission()) {
-            requestLocationPermission()
-        } else {
-            requestLocation()
-        }
-
-        //----location end
+        //------Get the Location and delivery charges from the SharedPreference from Splash Screen
+        sharedPreferences = requireActivity().getSharedPreferences("deliveryPreferences", AppCompatActivity.MODE_PRIVATE)
+        deliveryCharge = sharedPreferences.getString("deliveryCharge", "0")?.toIntOrNull() ?: 0
+        userAddress = sharedPreferences.getString("userAddress", "") ?: ""
+        deliveryChargeTextView.text = deliveryCharge.toString()
 
         couponApplyButton.setOnClickListener() {
 
@@ -421,173 +416,6 @@ class Cart : Fragment() {
         override fun getItemCount(): Int {
             return cartList.size
         }
-    }
-
-
-
-    //-----------location permission
-
-    private fun checkLocationPermission(): Boolean {
-        return ActivityCompat.checkSelfPermission(
-            requireContext(),
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
-    }
-
-    private fun requestLocationPermission() {
-        requestPermissions(
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            Cart.LOCATION_PERMISSION_REQUEST_CODE
-        )
-    }
-
-
-    private fun requestLocation() {
-        try {
-            val locationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10000) // Update every 10 seconds
-
-            val locationCallback = object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    val lastLocation = locationResult.lastLocation
-                    handleLocationSuccess(lastLocation)
-                    fusedLocationClient.removeLocationUpdates(this)
-                }
-            }
-
-            fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
-        } catch (e: SecurityException) {
-            handleLocationFailure(e)
-        }
-    }
-
-
-    //-------------Calculate the delivery charge
-    private fun handleLocationSuccess(location: Location?) {
-        location?.let {
-            val userLatitude = it.latitude
-            val userLongitude = it.longitude
-            // Use latitude and longitude as needed
-
-            val shopLatitude = 22.35293952799264
-            val shopLongitude = 91.82533493598135
-
-            val distance = calculateDistance(shopLatitude, shopLongitude, userLatitude, userLongitude)
-            userAddress = getAddressFromLocation(userLatitude, userLongitude)
-
-
-
-
-            if(distance <= 3){
-
-                deliveryCharge = 60
-
-            }
-            else if(distance>3 && distance<=4){
-
-                deliveryCharge = 80
-
-            }
-            else if(distance>4 && distance<=5){
-
-                deliveryCharge = 100
-
-            }
-            else if(distance>5 && distance<=6){
-
-                deliveryCharge = 120
-
-            }
-            else if(distance>6 && distance<=8){
-
-                deliveryCharge = 150
-
-            }
-            else if(distance>8 && distance<= 10){
-
-                deliveryCharge = 200
-
-            }
-            else if(distance > 10){
-
-                deliveryCharge = 99
-
-            }
-
-            deliveryChargeTextView.text= deliveryCharge.toString()
-            updatePrice()
-
-
-
-
-        } ?: run {
-            // Handle the case where location is null
-            handleLocationFailure(Exception("Location is null"))
-        }
-    }
-
-
-    private fun handleLocationFailure(exception: Exception) {
-        // Handle location retrieval failure, such as no location available
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            Cart.LOCATION_PERMISSION_REQUEST_CODE -> {
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // Permission granted, request location
-                    requestLocation()
-                } else {
-                    // Permission denied, handle accordingly
-                }
-            }
-        }
-    }
-
-
-    //--------Calculate distance for delivery
-
-    fun calculateDistance(
-        shopLatitude: Double,
-        shopLongitude: Double,
-        userLatitude: Double,
-        userLongitude: Double
-    ): Double {
-        val R = 6371.0 // Earth radius in kilometers
-
-        val dLat = Math.toRadians(userLatitude - shopLatitude)
-        val dLon = Math.toRadians(userLongitude - shopLongitude)
-
-        val a = sin(dLat / 2) * sin(dLat / 2) +
-                cos(Math.toRadians(shopLatitude)) * cos(Math.toRadians(userLatitude)) *
-                sin(dLon / 2) * sin(dLon / 2)
-
-        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
-
-        return R * c // Distance in kilometers
-    }
-
-    fun getAddressFromLocation(latitude: Double, longitude: Double): String {
-        val activity = requireActivity()
-        if (activity != null) {
-            val geocoder = Geocoder(activity, Locale.getDefault())
-            try {
-                val addresses: List<Address>? = geocoder.getFromLocation(latitude, longitude, 1)
-                if (addresses != null && addresses.isNotEmpty()) {
-                    val address = addresses[0]
-                    return address.getAddressLine(0) ?: ""
-                }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-        return ""
     }
 
 
