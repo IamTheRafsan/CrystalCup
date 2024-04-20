@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Response
@@ -20,6 +21,7 @@ class UpdateProfile : AppCompatActivity() {
     private lateinit var userPassword: EditText
     private lateinit var userConfirmPassword: EditText
     private lateinit var updateButton: Button
+    private lateinit var backButton: ImageView
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_update_profile)
@@ -30,6 +32,11 @@ class UpdateProfile : AppCompatActivity() {
         userPassword = findViewById(R.id.password)
         userConfirmPassword = findViewById(R.id.confirmPassword)
         updateButton = findViewById(R.id.updateButton)
+        backButton = findViewById(R.id.backButton)
+
+        backButton.setOnClickListener {
+            finish()
+        }
 
         updateButton.setOnClickListener(){
 

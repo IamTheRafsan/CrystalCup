@@ -1,6 +1,5 @@
 package com.example.foodapp
 
-import UserDashboard
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -94,8 +93,8 @@ class SignIn : AppCompatActivity() {
                                             editor.putString("userName", name)
                                             editor.apply()
 
-                                            val myintent = Intent(this, UserDashboard::class.java)
-                                            startActivity(myintent)
+                                            val myIntent = Intent(this, MainActivity::class.java)
+                                            startActivity(myIntent)
 
                                             progressBar.visibility = View.GONE
 

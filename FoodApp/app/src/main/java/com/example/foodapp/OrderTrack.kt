@@ -1,6 +1,5 @@
 package com.example.foodapp
 
-import UserDashboard
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences

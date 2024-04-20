@@ -3,6 +3,7 @@ package com.example.foodapp
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -14,10 +15,12 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.airbnb.lottie.LottieAnimationView
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonArrayRequest
 import com.android.volley.toolbox.Volley
@@ -33,8 +36,13 @@ class HomeScreen : Fragment() {
     private lateinit var userNameTextView: TextView
     private lateinit var locationTextView: TextView
     private lateinit var seeAllTextView: TextView
+    private lateinit var userName: TextView
+    private lateinit var userLocation: TextView
     private lateinit var searchTextField : EditText
     private lateinit var searchButton: ImageView
+    private lateinit var giftBox: LottieAnimationView
+    private lateinit var userSharedPreferences: SharedPreferences
+    private lateinit var locationSharedPreferences: SharedPreferences
     //----For the Menu
     val menuList: ArrayList<HashMap <String, String>> = ArrayList()
     var menuHashMap: HashMap<String, String>? = null
@@ -57,9 +65,26 @@ class HomeScreen : Fragment() {
         userNameTextView = view.findViewById(R.id.userName)
         locationTextView = view.findViewById(R.id.location)
         seeAllTextView = view.findViewById(R.id.seeAll)
+        userName = view.findViewById(R.id.userName)
+        userLocation = view.findViewById(R.id.location)
+        giftBox = view.findViewById(R.id.giftBox)
         searchTextField = view.findViewById(R.id.searchFood)
         searchButton = view.findViewById(R.id.searchButton)
         menuProgressBar = view.findViewById(R.id.menuProgressBar)
+
+        userSharedPreferences = requireActivity().getSharedPreferences("userPreferences", AppCompatActivity.MODE_PRIVATE)
+        locationSharedPreferences = requireActivity().getSharedPreferences("deliveryPreferences", AppCompatActivity.MODE_PRIVATE)
+
+        val uName = userSharedPreferences.getString("userName", "")
+        val uLocation = locationSharedPreferences.getString("userAddress", "")
+
+        if (userSharedPreferences.all.isEmpty()) {
+            val intent = Intent(requireContext(), SignIn::class.java)
+            startActivity(intent)
+        } else {
+            userName.text = "Hi, $uName"
+            userLocation.text = "$uLocation"
+        }
 
 
         //------Recycle View Setup
@@ -78,14 +103,14 @@ class HomeScreen : Fragment() {
             loadMenuFromWeb()
         }
 
+        giftBox.setOnClickListener(){
+            val offersFragment = Offers()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.frameLayout, offersFragment)
+                .addToBackStack(null) // Optional: Allows the user to navigate back to the previous fragment
+                .commit()
+        }
 
-        // Inside your HomeScreen fragment
-
-
-
-
-
-        // Inflate the layout for this fragment
         return view;
     }
 

@@ -1,3 +1,5 @@
+package com.example.foodapp
+
 import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
@@ -9,14 +11,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import com.example.foodapp.R
 import androidx.appcompat.app.AppCompatActivity
-import com.example.foodapp.HomeScreen
-import com.example.foodapp.MainActivity
-import com.example.foodapp.OrderHistory
-import com.example.foodapp.OrderTrack
-import com.example.foodapp.SignIn
-import com.example.foodapp.UpdateProfile
+
 
 
 class UserDashboard : Fragment() {
@@ -90,7 +86,7 @@ class UserDashboard : Fragment() {
         }
 
         backButton.setOnClickListener(){
-            val intent = Intent(requireContext(), HomeScreen::class.java)
+            val intent = Intent(requireContext(), MainActivity::class.java)
             startActivity(intent)
         }
 
